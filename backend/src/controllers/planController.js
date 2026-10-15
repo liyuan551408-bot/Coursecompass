@@ -1,4 +1,3 @@
-/** @file Translates plan HTTP requests into service calls and API responses. */
 const plannerService = require('../services/planService');
 const { parsePositiveInteger } = require('../utils/validation');
 
@@ -20,7 +19,7 @@ const createPlan = async (req, res) => {
         const plan = await plannerService.createPlan(userId, req.body);
         res.status(201).json({ success: true, message: 'Plan created successfully', data: plan });
     } catch (error) {
-        // Surface the composite uniqueness rule as a client-friendly conflict.
+
         if (error.code === 'P2002') {
             return res.status(409).json({ success: false, message: 'A plan with this name already exists for this semester' });
         }
@@ -56,7 +55,7 @@ const addCourse = async (req, res) => {
         const result = await plannerService.addCourseToPlan(userId, planId, courseId, {
             confirmPrerequisites: req.body.confirmPrerequisites !== false,
         });
-        
+
         res.status(201).json({ 
             success: true, 
             message: 'Course added to plan', 

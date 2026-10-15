@@ -1,7 +1,3 @@
-/** @file Bootstraps the Express API, installs shared middleware, mounts routes, and starts the server. */
-
-// Prefer the project's local .env during development so stale variables inherited
-// from the terminal or IDE cannot silently override the configured credentials.
 require('dotenv').config({
     override: process.env.NODE_ENV !== 'production'
 });
@@ -32,11 +28,6 @@ app.use((_req, res, next) => {
 });
 app.use(express.json({ limit: '32kb' }));
 
-
-// ================================
-// Routes
-// ================================
-
 const courseRoutes = require('./src/routes/courseRoutes');
 const aiRoutes = require('./src/routes/aiRoutes');
 const userRoutes = require('./src/routes/userRoutes');
@@ -49,7 +40,6 @@ const healthRoutes = require('./src/routes/healthRoutes');
 const notificationRoutes = require('./src/routes/notificationRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const subjectRoutes = require('./src/routes/subjectRoutes');
-
 
 app.use('/api/courses', courseRoutes);
 app.use('/api/ai', aiRoutes);
@@ -69,11 +59,6 @@ app.use((error, _req, res, _next) => {
     console.error('Unhandled request error:', error.message);
     res.status(500).json({ success: false, message: 'Unexpected server error' });
 });
-
-
-// ================================
-// Start server
-// ================================
 
 app.listen(PORT, () => {
     console.log('Your Express backend server has started successfully.');

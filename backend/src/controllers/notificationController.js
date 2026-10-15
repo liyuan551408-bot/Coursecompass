@@ -1,4 +1,3 @@
-/** @file Handles authenticated notification requests. */
 const notificationService = require('../services/notificationService');
 const { parsePositiveInteger } = require('../utils/validation');
 

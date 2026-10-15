@@ -1,4 +1,3 @@
-/** @file Creates the Vue application and installs Pinia, routing, and Element Plus. */
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import {
@@ -27,7 +26,6 @@ for (const component of [
 }
 app.use(ElLoading)
 
-// Restore the saved session after a page refresh.
 const authStore = useAuthStore()
 authStore.restoreSession()
 

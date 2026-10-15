@@ -1,8 +1,5 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the home page. -->
 <script setup>
-/**
- * Home page - CourseCompass landing
- */
+
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
@@ -18,7 +15,6 @@ const authStore = useAuthStore()
 const featuredCourses = ref([])
 const coursesLoading = ref(true)
 
-// User-provided images
 const heroImage = homepageImg
 const stepImages = [discoverImg, compareImg, planImg]
 
@@ -103,7 +99,7 @@ onMounted(loadFeaturedCourses)
 
 <template>
   <div class="home-page">
-    <!-- ===== Hero Section ===== -->
+
     <section class="hero-section">
       <div class="hero-content">
         <div class="hero-badge">
@@ -137,7 +133,6 @@ onMounted(loadFeaturedCourses)
       </div>
     </section>
 
-    <!-- ===== Features Section ===== -->
     <section class="features-section">
       <div class="section-header">
         <p class="section-eyebrow">FEATURES</p>
@@ -160,7 +155,6 @@ onMounted(loadFeaturedCourses)
       </div>
     </section>
 
-    <!-- ===== How It Works ===== -->
     <section class="steps-section">
       <div class="section-header">
         <p class="section-eyebrow">HOW IT WORKS</p>
@@ -171,7 +165,7 @@ onMounted(loadFeaturedCourses)
         <div v-for="(step, index) in steps" :key="step.number" class="step-card">
           <div class="step-image-wrapper">
             <img :src="stepImages[index]" :alt="step.title" class="step-image" />
-            
+
           </div>
           <div class="step-content">
             <h3>{{ step.title }}</h3>
@@ -181,7 +175,6 @@ onMounted(loadFeaturedCourses)
       </div>
     </section>
 
-    <!-- ===== Featured Courses ===== -->
     <section v-if="featuredCourses.length" class="featured-section">
       <div class="section-header">
         <p class="section-eyebrow">EXPLORE</p>
@@ -212,7 +205,6 @@ onMounted(loadFeaturedCourses)
       </div>
     </section>
 
-    <!-- ===== CTA Section ===== -->
     <section class="cta-section">
       <div class="cta-card">
         <div class="cta-content">
@@ -243,7 +235,6 @@ onMounted(loadFeaturedCourses)
   overflow: hidden;
 }
 
-/* ===== Hero ===== */
 .hero-section {
   display: flex;
   align-items: center;
@@ -324,7 +315,6 @@ onMounted(loadFeaturedCourses)
   font-size: 16px !important;
 }
 
-/* Hero Visual */
 .hero-visual {
   flex: 1;
   display: flex;
@@ -357,7 +347,6 @@ onMounted(loadFeaturedCourses)
   transform: scale(1.04);
 }
 
-/* ===== Section Headers ===== */
 .section-header {
   text-align: center;
   margin-bottom: 48px;
@@ -387,7 +376,6 @@ onMounted(loadFeaturedCourses)
   line-height: 1.6;
 }
 
-/* ===== Features ===== */
 .features-section {
   padding: 72px 0;
 }
@@ -437,7 +425,6 @@ onMounted(loadFeaturedCourses)
   margin: 0;
 }
 
-/* ===== Steps ===== */
 .steps-section {
   padding: 72px 0;
 }
@@ -479,8 +466,6 @@ onMounted(loadFeaturedCourses)
   transform: scale(1.06);
 }
 
-
-
 .step-content {
   padding: 24px;
 }
@@ -499,7 +484,6 @@ onMounted(loadFeaturedCourses)
   margin: 0;
 }
 
-/* ===== Featured Courses ===== */
 .featured-section {
   padding: 72px 0;
 }
@@ -593,7 +577,6 @@ onMounted(loadFeaturedCourses)
   text-align: center;
 }
 
-/* ===== CTA ===== */
 .cta-section {
   padding: 40px 0 80px;
 }
@@ -695,7 +678,6 @@ onMounted(loadFeaturedCourses)
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 960px) {
   .hero-section {
     flex-direction: column;

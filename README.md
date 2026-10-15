@@ -1,181 +1,151 @@
 # CourseCompass
 
-**CourseCompass** is a full-stack university course-planning web application designed to help students discover, compare, organise, and plan university courses more effectively.
+CourseCompass helps university students search and compare courses, save courses, record completed study, build semester plans, submit reviews, and receive AI-assisted recommendations. Moderators manage reviews and reports; administrators manage courses, subjects, and users.
 
-The project combines traditional course-planning functions with practical AI features. Students can browse course information, search and compare courses, manage saved and completed courses, build study plans, submit reviews, and receive AI-assisted course recommendations.
+## Technology
 
-CourseCompass uses a **Vue 3** frontend, an **Express / Node.js** backend, **Prisma ORM** with **PostgreSQL / Supabase**, and AI services including **SiliconFlow BAAI/bge-m3** embeddings and **Zhipu AI**.
+| Area | Implementation |
+| --- | --- |
+| Frontend | Vue 3, Vue Router, Pinia, Element Plus, Axios, Vite |
+| Backend | Node.js, Express, CommonJS |
+| Database | PostgreSQL with pgvector, Prisma ORM |
+| Semantic search | SiliconFlow BAAI/bge-m3 embeddings |
+| AI explanations | Zhipu AI |
 
----
+Chart.js is not used in the current implementation. References to Chart.js in the proposal describe a planned dependency rather than an implemented feature.
 
-## Project Structure
-
-```text
-Coursecamposs/
-├── backend/
-│   ├── prisma/
-│   │   ├── migrations/          # Database migrations
-│   │   └── schema.prisma        # Prisma database schema
-│   ├── scripts/                 # Utility and embedding scripts
-│   ├── src/
-│   │   ├── controllers/         # Request handlers
-│   │   ├── lib/                 # Shared backend libraries
-│   │   ├── middlewares/         # Authentication and middleware
-│   │   ├── routes/              # REST API routes
-│   │   ├── services/            # Business logic and AI services
-│   │   └── utils/               # Backend utilities
-│   ├── test/                    # Backend tests
-│   ├── .env.example             # Backend environment template
-│   ├── app.js                   # Backend entry point
-│   ├── prisma.config.ts         # Prisma configuration
-│   └── package.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── api/                 # API request modules
-│   │   ├── components/          # Reusable Vue components
-│   │   ├── images/              # Image assets
-│   │   ├── router/              # Vue Router configuration
-│   │   ├── stores/              # Pinia stores
-│   │   ├── utils/               # Frontend utilities
-│   │   ├── views/               # Application pages
-│   │   ├── App.vue              # Root Vue component
-│   │   └── main.js              # Frontend entry point
-│   ├── test/                    # Frontend tests
-│   ├── .env.example             # Frontend environment template
-│   ├── vite.config.js
-│   └── package.json
-│
-├── .github/                     # GitHub workflow configuration
-└── README.md
-```
-
----
-
-## Installation and Running
-
-### Requirements
-
-Before running the project, make sure the following are available:
-
-- **Node.js 22+**
-- **npm**
-- PostgreSQL database with **pgvector** support
-- Required API keys and environment variables
-
-Clone the repository:
-
-```bash
-git clone https://github.com/liyuan551408-bot/Coursecamposs.git
-cd Coursecamposs
-```
-
-### Node.js Configuration
-
-Check the currently installed Node.js and npm versions:
-
-```bash
-node -v
-npm -v
-```
-
-The project requires **Node.js 22 or later**.
-
-If you are using **NVM**, install and switch to Node.js 22:
-
-```bash
-nvm install 22
-nvm use 22
-```
-
-Verify the active version:
-
-```bash
-node -v
-```
-
-The output should be similar to:
+## Project structure
 
 ```text
-v22.x.x
+backend/
+  prisma/
+    migrations/
+    schema.prisma
+  scripts/
+  src/
+    controllers/
+    lib/
+    middlewares/
+    routes/
+    services/
+    utils/
+  test/
+    integration/
+  .env.example
+  app.js
+  package.json
+frontend/
+  public/
+  src/
+    api/
+    components/
+    images/
+    router/
+    stores/
+    utils/
+    views/
+  test/
+  .env.example
+  package.json
+  vite.config.js
+.github/workflows/ci.yml
+README.md
 ```
 
-If npm needs to be updated:
+The frontend and backend manage dependencies separately. Run npm commands in the relevant directory; there is no root npm package. Prisma CLI commands run from backend, discover prisma/schema.prisma, and load backend/.env without a separate Prisma configuration file.
 
-```bash
-npm install -g npm@latest
-```
+## Requirements
 
-Verify again:
+- Node.js 22.12 or later and npm. CI uses Node.js 22.
+- PostgreSQL with pgvector support, such as a configured Supabase database.
+- SiliconFlow and Zhipu API credentials for AI features.
+- SMTP credentials for password-reset emails.
 
-```bash
-node -v
-npm -v
-```
+## Backend setup
 
----
-
-### Backend
-
-Open a terminal and enter the backend directory:
+From the repository root:
 
 ```bash
 cd backend
+npm ci
 ```
 
-Run the following commands in order:
+Copy backend/.env.example to backend/.env and replace the placeholders:
+
+| Variable | Purpose |
+| --- | --- |
+| DATABASE_URL | PostgreSQL connection string |
+| JWT_SECRET | Secret used to sign authentication tokens |
+| PORT | API port; defaults to 3000 |
+| CORS_ORIGIN | Optional comma-separated allowed frontend origins |
+| SILICONFLOW_API_KEY | Embedding provider credential |
+| SILICONFLOW_EMBEDDING_MODEL | Embedding model; BAAI/bge-m3 |
+| SILICONFLOW_EMBEDDING_URL | Embedding endpoint |
+| AI_SIMILARITY_THRESHOLD | Semantic-search similarity threshold |
+| ZHIPU_API_KEY | AI explanation provider credential |
+| ZHIPU_API_URL | Chat completion endpoint |
+| SMTP_HOST, SMTP_PORT | Mail server connection settings |
+| SMTP_USER, SMTP_PASS | Mail server credentials |
+
+For Gmail SMTP, enable two-step verification and use an app password as SMTP_PASS.
+
+With the database and API credentials configured, run:
 
 ```bash
-npm ci
-npx prisma generate
 npm run setup
-npm test
 npm run dev
 ```
 
-The commands perform the following tasks:
+The setup command validates the schema, generates Prisma Client, applies database migrations, prepares course embeddings, and checks migration status. It changes the configured database and calls the embedding provider. Use npm start to run the API without the development watcher.
 
-```text
-npm ci                Install dependencies from package-lock.json
-npx prisma generate   Generate Prisma Client
-npm run setup         Validate Prisma, apply migrations and prepare embeddings
-npm test              Run the backend test suite
-npm run dev           Start the backend development server
-```
+The API is available at http://localhost:3000/api.
 
-The backend runs at:
+## Frontend setup
 
-```text
-http://localhost:3000
-```
-
----
-
-### Frontend
-
-Open another terminal and enter the frontend directory:
+In a separate terminal, from the repository root:
 
 ```bash
 cd frontend
+npm ci
 ```
 
-Run:
+Copy frontend/.env.example to frontend/.env and set VITE_API_BASE_URL to your API URL. The local default is http://localhost:3000/api.
 
 ```bash
-npm ci
 npm run dev
 ```
 
-The frontend runs at:
+Open http://localhost:5173. To build and preview the production frontend:
 
-```text
-http://localhost:5173
+```bash
+npm run build
+npm run preview
 ```
 
-The frontend communicates with the backend through:
+## Tests and maintenance
 
-```text
-http://localhost:3000/api
+Run frontend tests from frontend:
+
+```bash
+npm test
 ```
 
-Once both servers are running, open **http://localhost:5173** in your browser to use CourseCompass.
+Run backend unit and regression tests from backend:
+
+```bash
+node --test --test-concurrency=1 test/*.test.js
+```
+
+Running npm test in backend also runs integration tests. These require a configured database and create temporary fixtures; use a dedicated test database.
+
+| Backend command | Purpose |
+| --- | --- |
+| npx prisma validate | Validate the database schema |
+| npx prisma generate | Regenerate Prisma Client |
+| npx prisma migrate status | Inspect database migration status |
+| npm run embeddings:generate | Generate missing course embeddings |
+| npm run embeddings:rebuild | Regenerate all course embeddings |
+
+Keep existing migration SQL files unchanged after deployment so their checksums continue to match the database migration history.
+
+CI builds the frontend, validates Prisma, checks backend syntax, and verifies database and API connectivity. Configure the DATABASE_URL and JWT_SECRET repository secrets; AI provider credentials are also read from repository secrets.

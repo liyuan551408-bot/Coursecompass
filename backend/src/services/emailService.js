@@ -1,4 +1,3 @@
-/** @file Implements email business rules and persistence operations. */
 const nodemailer = require('nodemailer');
 const smtpPort = Number(process.env.SMTP_PORT || 465);
 

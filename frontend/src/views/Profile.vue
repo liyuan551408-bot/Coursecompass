@@ -1,4 +1,3 @@
-<!-- @file Displays editable profile details and completed courses. -->
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'

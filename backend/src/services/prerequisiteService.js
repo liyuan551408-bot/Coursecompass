@@ -1,4 +1,3 @@
-/** Resolve the course IDs or codes accepted by the admin prerequisite field. */
 const resolvePrerequisiteCourses = async (prisma, rawReferences) => {
     if (!Array.isArray(rawReferences)) {
         throw new TypeError('prerequisiteIds must be an array');

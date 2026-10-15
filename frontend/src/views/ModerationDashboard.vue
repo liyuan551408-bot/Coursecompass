@@ -1,4 +1,3 @@
-<!-- @file Presents the protected pending-review queue to moderators and administrators. -->
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'

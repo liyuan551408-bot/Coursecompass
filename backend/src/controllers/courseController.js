@@ -1,4 +1,3 @@
-/** @file Translates course HTTP requests into service calls and API responses. */
 const courseService = require('../services/courseService');
 
 const COURSE_SEMESTERS = new Set(['SEMESTER_1', 'SEMESTER_2', 'SUMMER']);
@@ -79,7 +78,6 @@ const normalizeCoursePayload = (body, { partial = false } = {}) => {
     return data;
 };
 
-// Handle requests to get all courses.
 const getCourses = async (req, res) => {
     try {
         const skip = Number(req.query.skip ?? 0);
@@ -133,7 +131,6 @@ const getAdminCourses = async (_req, res) => {
     }
 };
 
-// Handle course creation.
 const createCourse = async (req, res) => {
     try {
         const { name, code, credits, description, workloadHours, offeredSemesters,
@@ -160,8 +157,6 @@ const createCourse = async (req, res) => {
     } catch (error) {
         console.error('Course creation failed:', error);
 
-        // Return actionable client errors for the constraints most commonly
-        // encountered by the admin form instead of masking them as a 500.
         if (error instanceof TypeError) {
             return res.status(400).json({ success: false, message: error.message });
         }
@@ -181,7 +176,6 @@ const createCourse = async (req, res) => {
     }
 };
 
-// Handle single-course lookup by ID.
 const getCourseById = async (req, res) => {
     try {
         const courseId = req.params.id;
@@ -196,7 +190,6 @@ const getCourseById = async (req, res) => {
     }
 };
 
-// Handle single-course lookup by code.
 const getCourseByCode = async (req, res) => {
     try {
         const course = await courseService.getCourseByCode(req.params.code);
@@ -213,7 +206,6 @@ const getCourseByCode = async (req, res) => {
     }
 };
 
-// Handle course comparison.
 const compareCourses = async (req, res) => {
     try {
         const { courseIds } = req.body;
@@ -233,7 +225,6 @@ const compareCourses = async (req, res) => {
     }
 };
 
-// Handle advanced course search.
 const searchCourses = async (req, res) => {
     try {
         const courses = await courseService.searchCourses(req.query);
@@ -252,7 +243,6 @@ const searchCourses = async (req, res) => {
     }
 };
 
-// Handle course updates and refresh the course embedding.
 const updateCourse = async (req, res) => {
     try {
         if (!/^\d+$/.test(req.params.id)) {

@@ -1,4 +1,3 @@
-/** @file Wraps backend courses endpoints behind a small frontend API client. */
 import request from './request'
 
 export async function getCourses({ skip = 0, take = 50 } = {}) {

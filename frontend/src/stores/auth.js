@@ -1,7 +1,3 @@
-/** @file Owns reactive auth state and its persistence or API synchronization rules. */
-/**
- * Authentication state management
- */
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { loginApi, registerApi } from '../api/auth'
@@ -24,7 +20,6 @@ export const useAuthStore = defineStore('auth', () => {
   const isStudent = computed(() => normalizedRole.value === 'student')
   const userName = computed(() => user.value?.name || user.value?.email || '')
 
-  /** Store backend/mock authentication data in Pinia and localStorage. */
   function applyAuthData(data) {
     token.value = data.token
     user.value = data.user
@@ -37,27 +32,23 @@ export const useAuthStore = defineStore('auth', () => {
     setStoredUser(nextUser)
   }
 
-  /** Log in: call the API, save the token/user, then update the store. */
   async function login(credentials) {
     const data = await loginApi(credentials)
     applyAuthData(data)
     return data
   }
 
-  /** Register an account, then sign in with the newly created credentials. */
   async function register(formData) {
     await registerApi(formData)
     return login({ email: formData.email, password: formData.password, role: 'STUDENT' })
   }
 
-  /** Log out: clear the store and localStorage. */
   function logout() {
     token.value = null
     user.value = null
     clearAuthStorage()
   }
 
-  /** Restore the login state from localStorage after a refresh. */
   function restoreSession() {
     token.value = getToken()
     user.value = getStoredUser()

@@ -1,8 +1,5 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the compare courses page. -->
 <script setup>
-/**
- * Course comparison page.
- */
+
 import { ref, computed, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
@@ -41,10 +38,6 @@ const allCourses = ref([])
 const subjects = ref([])
 const savingIds = ref(new Set())
 
-/**
- * Resolve a course's subject ID.
- * Supports both subjectId and nested subject.id.
- */
 function getCourseSubjectId(course) {
   const id = Number(course?.subjectId ?? course?.subject?.id)
   return Number.isInteger(id) && id > 0 ? id : null
@@ -205,7 +198,6 @@ function viewCourseDetails(courseId) {
   router.push(courseDetailLocation(courseId, route, 'compare'))
 }
 
-/** Request an on-demand AI analysis for the currently selected courses. */
 async function generateAiComparison() {
   if (aiLoading.value) return
 
@@ -267,7 +259,6 @@ async function generateAiComparison() {
   }
 }
 
-/** Convert AI relationship course IDs into readable course codes. */
 function courseCodes(courseIds) {
   return courseIds
     .map(
@@ -425,7 +416,6 @@ watch(subjectId, value =>
       :disabled="aiLoading"
     />
 
-    <!-- Course selection -->
     <el-card
       class="selector-card"
       shadow="never"
@@ -445,7 +435,6 @@ watch(subjectId, value =>
         </span>
       </div>
 
-      <!-- Search -->
       <div class="selector-search">
         <el-input
           v-model="searchQuery"
@@ -479,14 +468,7 @@ watch(subjectId, value =>
           :key="group.id"
           class="course-group"
         >
-          <!--
-            When All courses is selected we keep the
-            internal group headers.
 
-            When a specific subject is selected the
-            top horizontal tab already shows the
-            subject, so the repeated heading is hidden.
-          -->
           <h3
             v-if="!subjectId"
             class="course-group-title"
@@ -619,7 +601,6 @@ watch(subjectId, value =>
       </div>
     </el-card>
 
-    <!-- Comparison result -->
     <div
       v-if="compareCourses.length"
       class="compare-result"
@@ -640,7 +621,6 @@ watch(subjectId, value =>
         </el-button>
       </div>
 
-      <!-- Selected course cards -->
       <div class="selected-overview">
         <div
           v-for="course in compareCourses"
@@ -746,7 +726,6 @@ watch(subjectId, value =>
         </div>
       </div>
 
-      <!-- AI comparison -->
       <el-card
         v-if="aiAnalysis"
         class="ai-summary-card"
@@ -1113,8 +1092,6 @@ watch(subjectId, value =>
   flex-shrink: 0;
 }
 
-/* Quick save button */
-
 .quick-save-btn {
   width: 30px;
   height: 30px;
@@ -1163,8 +1140,6 @@ watch(subjectId, value =>
   opacity: 0.5;
   pointer-events: none;
 }
-
-/* Selected courses overview */
 
 .selected-overview {
   display: grid;

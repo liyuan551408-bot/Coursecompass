@@ -1,8 +1,6 @@
-/** @file Implements plan business rules and persistence operations. */
 const prisma = require('../lib/prisma');
 const { createNotificationsSafely, deleteExpired } = require('./notificationService');
 
-// Create a semester plan owned by one user.
 const createPlan = async (userId, data) => {
     const plan = await prisma.semesterPlan.create({
         data: {
@@ -16,15 +14,14 @@ const createPlan = async (userId, data) => {
     return plan;
 };
 
-// Load all plans for a user together with their course details.
 const getUserPlans = async (userId) => {
     return prisma.semesterPlan.findMany({
         where: { userId: Number(userId) },
         include: {
-            // Traverse the join records to include each referenced course.
+
             planCourses: {
                 include: {
-                    course: true 
+                    course: true
                 }
             }
         },
@@ -35,6 +32,7 @@ const getUserPlans = async (userId) => {
     });
 };
 
+// Check ownership in the service so knowing another student's plan ID grants no access.
 const requireOwnedPlan = async (userId, planId) => {
     const plan = await prisma.semesterPlan.findUnique({ where: { id: Number(planId) } });
     if (!plan) {
@@ -50,10 +48,9 @@ const requireOwnedPlan = async (userId, planId) => {
     return plan;
 };
 
-// Add a course to a plan and report unmet prerequisites.
 const addCourseToPlan = async (userId, planId, courseId, { confirmPrerequisites = true } = {}) => {
     const targetPlan = await requireOwnedPlan(userId, planId);
-    // Load prerequisite ids before changing the plan.
+
     const course = await prisma.course.findFirst({
         where: { id: Number(courseId), isActive: true },
         include: { prerequisites: true }
@@ -67,29 +64,26 @@ const addCourseToPlan = async (userId, planId, courseId, { confirmPrerequisites 
 
     let warnings = [];
 
-    // Only perform completion checks when prerequisites exist.
     if (course.prerequisites.length > 0) {
-        // Collect courses the user has already completed.
+
         const completed = await prisma.completedCourse.findMany({
             where: { userId: Number(userId) }
         });
         const completedIds = completed.map(c => c.courseId);
 
-        // A planned prerequisite only counts when it occurs before the target
-        // semester. Courses in the same or a later semester still need a warning.
         const planned = await prisma.planCourse.findMany({
             where: { plan: { userId: Number(userId) } },
             include: { plan: { select: { year: true, semester: true } } }
         });
         const semesterOrder = { SUMMER: 0, SEMESTER_1: 1, SEMESTER_2: 2 };
+        // Courses in the same or a later semester do not satisfy a planned prerequisite.
         const isEarlierPlan = (plan) => plan.year < targetPlan.year || (
             plan.year === targetPlan.year
             && (semesterOrder[plan.semester] ?? 99) < (semesterOrder[targetPlan.semester] ?? 99)
         );
         const plannedIds = planned.filter(({ plan }) => isEarlierPlan(plan)).map(({ courseId: id }) => id);
 
-        // Warn only for prerequisites that are neither completed nor planned.
-        const missingPrereqs = course.prerequisites.filter(p => 
+        const missingPrereqs = course.prerequisites.filter(p =>
             !completedIds.includes(p.id) && !plannedIds.includes(p.id)
         );
 
@@ -99,23 +93,21 @@ const addCourseToPlan = async (userId, planId, courseId, { confirmPrerequisites 
         }
     }
 
-    // Let the client ask for confirmation before persisting a course with unmet prerequisites.
+    // Let the caller show warnings before committing when explicit confirmation is requested.
     if (warnings.length > 0 && !confirmPrerequisites) {
         return { course: null, warnings, requiresConfirmation: true };
     }
 
-    // Persist the requested course even when non-blocking warnings exist.
     const addedCourse = await prisma.planCourse.create({
         data: {
             planId: Number(planId),
             courseId: Number(courseId)
         },
         include: {
-            course: true // Include details required to update the frontend immediately.
+            course: true
         }
     });
 
-    // Return warnings alongside data so the controller can preserve both.
     const result = {
         ...addedCourse,
         warnings,
@@ -125,7 +117,6 @@ const addCourseToPlan = async (userId, planId, courseId, { confirmPrerequisites 
     return result;
 };
 
-// Remove one course from a plan owned by the user.
 const removeCourseFromPlan = async (userId, planId, courseId) => {
     await requireOwnedPlan(userId, planId);
     const removed = await prisma.planCourse.delete({
@@ -153,5 +144,4 @@ module.exports = {
     deletePlan
 };
 
-// Keep long-lived notification tables bounded without affecting request latency.
 setInterval(() => deleteExpired().catch((error) => console.error('Notification cleanup failed:', error)), 24 * 60 * 60 * 1000).unref();

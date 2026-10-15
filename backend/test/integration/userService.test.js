@@ -1,4 +1,3 @@
-/** @file Exercises user service.smoke behavior as a repeatable command-line smoke check. */
 const assert = require('node:assert/strict');
 const bcrypt = require('bcryptjs');
 const crypto = require('node:crypto');

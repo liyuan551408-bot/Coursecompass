@@ -1,4 +1,3 @@
-<!-- @file Provides the shared labelled advanced course-filter layout. -->
 <script setup>
 import { computed, reactive, watch } from 'vue'
 import { CREDIT_RANGE, WORKLOAD_RANGE } from '../utils/courseFilters'

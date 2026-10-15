@@ -1,4 +1,3 @@
-/** @file Wraps authenticated saved-course endpoints. */
 import request from './request'
 
 export async function getSavedCourses() {

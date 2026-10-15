@@ -1,4 +1,3 @@
-/** @file Translates saved course HTTP requests into service calls and API responses. */
 const savedCourseService = require('../services/savedCourseService');
 const { parsePositiveInteger } = require('../utils/validation');
 

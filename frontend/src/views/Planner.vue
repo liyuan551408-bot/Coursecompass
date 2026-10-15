@@ -1,8 +1,5 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the planner page. -->
 <script setup>
-/**
- * Semester planner page.
- */
+
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -354,7 +351,6 @@ onMounted(loadCourses)
       </div>
     </div>
 
-    <!-- Aggregate plan statistics with progress -->
     <div class="overview-bar">
       <div class="overview-item">
         <div class="overview-icon overview-icon--purple">📚</div>
@@ -386,7 +382,6 @@ onMounted(loadCourses)
       </div>
     </div>
 
-    <!-- Workload warning -->
     <el-alert
       v-if="plannerStore.semesters.some(s => s.courses.reduce((sum, c) => sum + (c.workloadHours || 0), 0) > WORKLOAD_WARNING_THRESHOLD)"
       type="warning"
@@ -398,7 +393,6 @@ onMounted(loadCourses)
       One or more semesters exceed {{ WORKLOAD_WARNING_THRESHOLD }} study hours. Consider balancing your course load.
     </el-alert>
 
-    <!-- Saved courses hint -->
     <el-card v-if="savedStore.savedCount > 0 && !totalCourses" class="hint-card" shadow="never">
       <div class="hint-content">
         <span class="hint-icon">💡</span>
@@ -409,7 +403,6 @@ onMounted(loadCourses)
       </div>
     </el-card>
 
-    <!-- Editable semester list -->
     <div class="semesters-container">
       <div
         v-for="sem in semesterStats"
@@ -434,7 +427,6 @@ onMounted(loadCourses)
           </el-button>
         </div>
 
-        <!-- Semester progress -->
         <div class="semester-progress">
           <div class="progress-row">
             <span class="progress-label">Credits</span>
@@ -500,14 +492,12 @@ onMounted(loadCourses)
         </el-button>
       </div>
 
-      <!-- Add-semester action -->
       <div class="add-semester-card" @click="addSemester">
         <div class="add-icon">+</div>
         <span>Add semester</span>
       </div>
     </div>
 
-    <!-- Multi-select course dialog -->
     <el-dialog
       v-model="pendingCourseDialogVisible"
       title="Choose a semester"
@@ -694,7 +684,6 @@ onMounted(loadCourses)
   flex-shrink: 0;
 }
 
-/* Overview */
 .overview-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -751,13 +740,11 @@ onMounted(loadCourses)
   margin-top: 2px;
 }
 
-/* Alert */
 .workload-alert {
   margin-bottom: 20px;
   border-radius: var(--radius) !important;
 }
 
-/* Hint card */
 .hint-card {
   margin-bottom: 20px;
   border-radius: var(--radius-lg) !important;
@@ -787,7 +774,6 @@ onMounted(loadCourses)
   color: var(--text);
 }
 
-/* Semesters */
 .semesters-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -831,7 +817,6 @@ onMounted(loadCourses)
   color: var(--text-muted);
 }
 
-/* Progress */
 .semester-progress {
   margin-bottom: 16px;
   display: flex;
@@ -885,7 +870,6 @@ onMounted(loadCourses)
   flex-shrink: 0;
 }
 
-/* Courses */
 .semester-courses {
   flex: 1;
   min-height: 80px;
@@ -979,7 +963,6 @@ onMounted(loadCourses)
   line-height: 1;
 }
 
-/* Dialog */
 .dialog-header {
   display: flex;
   gap: 10px;

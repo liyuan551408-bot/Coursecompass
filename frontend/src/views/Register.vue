@@ -1,8 +1,5 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the register page. -->
 <script setup>
-/**
- * Registration page
- */
+
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'

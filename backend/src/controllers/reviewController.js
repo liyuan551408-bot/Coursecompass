@@ -1,7 +1,5 @@
-/** @file Translates review HTTP requests into service calls and API responses. */
 const reviewService = require('../services/reviewService');
 
-// Normalize expected domain and Prisma failures into consistent HTTP responses.
 const handleReviewError = (res, error, context) => {
     if (error instanceof TypeError) {
         return res.status(400).json({ success: false, message: error.message });
@@ -16,7 +14,6 @@ const handleReviewError = (res, error, context) => {
     return res.status(500).json({ success: false, message: 'Server Error' });
 };
 
-// Convert numeric form fields at the transport boundary before service validation.
 const parseReviewBody = (body) => ({
     overallRating: body.overallRating !== undefined ? Number(body.overallRating) : undefined,
     difficultyRating: body.difficultyRating !== undefined ? Number(body.difficultyRating) : undefined,

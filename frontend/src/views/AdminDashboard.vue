@@ -1,4 +1,3 @@
-<!-- @file Provides administrator course, subject, user, and role management. -->
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'

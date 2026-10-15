@@ -1,4 +1,3 @@
-/** @file Implements saved course business rules and persistence operations. */
 const prisma = require('../lib/prisma');
 const { createNotificationsSafely } = require('./notificationService');
 

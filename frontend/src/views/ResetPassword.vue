@@ -1,4 +1,3 @@
-<!-- @file Verifies an emailed code and sets a new password. -->
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

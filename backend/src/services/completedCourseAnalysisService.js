@@ -1,11 +1,5 @@
-/** @file Connects recommendation candidates with relevant courses a student has completed. */
-
 const MAX_CONNECTIONS_PER_COURSE = 5;
 
-/**
- * Add evidence-backed completed-course connections to each candidate.
- * Recorded prerequisites take priority, followed by courses in the same subject.
- */
 const attachCompletedCourseConnections = (candidates = [], completedCourses = []) => {
     const completedById = new Map(completedCourses.map(course => [Number(course.id), course]));
 
@@ -50,7 +44,6 @@ const attachCompletedCourseConnections = (candidates = [], completedCourses = []
     });
 };
 
-/** Return the unique completed courses that informed at least one recommendation. */
 const collectRelevantCompletedCourses = candidates => {
     const relevant = new Map();
     for (const candidate of candidates || []) {

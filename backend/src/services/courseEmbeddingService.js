@@ -1,7 +1,6 @@
 const prisma = require('../lib/prisma');
 const aiService = require('./aiService');
 
-/** Convert a course attribute list into text suitable for semantic embedding. */
 const formatList = (value) => {
     if (!Array.isArray(value) || value.length === 0) {
         return 'Not specified';
@@ -9,7 +8,7 @@ const formatList = (value) => {
     return value.join(', ');
 };
 
-/** Build the single canonical text representation used for every course vector. */
+// Use one text format for both batch generation and course-update embedding jobs.
 const buildCourseEmbeddingText = (course) => {
     const description = course.description || 'No detailed description available.';
 
@@ -25,7 +24,6 @@ const buildCourseEmbeddingText = (course) => {
     ].join('. ');
 };
 
-/** Generate a course vector and persist it in PostgreSQL */
 const refreshCourseEmbedding = async (course) => {
     const embedding = await aiService.generateEmbedding(buildCourseEmbeddingText(course));
     const vectorString = `[${embedding.join(',')}]`;
@@ -37,7 +35,6 @@ const refreshCourseEmbedding = async (course) => {
     );
 };
 
-/** Execute one course embedding job without allowing provider failures to escape. */
 const runCourseEmbeddingJob = async (course, refresh = refreshCourseEmbedding) => {
     try {
         await refresh(course);
@@ -49,11 +46,11 @@ const runCourseEmbeddingJob = async (course, refresh = refreshCourseEmbedding) =
     }
 };
 
-/** Schedule one non-blocking embedding job after a course has been persisted. */
 const enqueueCourseEmbedding = (
     course,
     { schedule = setImmediate, runJob = runCourseEmbeddingJob } = {}
 ) => {
+    // Course writes complete independently of the provider; this in-memory job is not durable.
     schedule(() => Promise.resolve(runJob(course)).catch((error) => {
         console.error(`[Embedding job] Unexpected failure for ${course.code}:`, error.message);
     }));

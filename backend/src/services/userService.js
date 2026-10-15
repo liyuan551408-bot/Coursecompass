@@ -1,4 +1,3 @@
-/** @file Implements user business rules and persistence operations. */
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const prisma = require('../lib/prisma');
@@ -7,7 +6,6 @@ const { validatePassword } = require('../utils/passwordPolicy');
 const ASSESSMENT_TYPES = new Set(['EXAM', 'ASSIGNMENT', 'QUIZ', 'PROJECT', 'LAB', 'PRESENTATION']);
 const WORKLOAD_PREFERENCES = new Set(['LIGHT', 'MODERATE', 'INTENSIVE']);
 
-/** Validate and normalize the student-controlled AI planning preferences. */
 const normalizePlanningPreferences = (value) => {
     if (value === null) return null;
     if (typeof value !== 'object' || Array.isArray(value)) {
@@ -126,7 +124,6 @@ const generateResetCode = async (email) => {
 
     const resetCode = crypto.randomInt(100000,1000000).toString();
 
-    // Reset codes expire after ten minutes.
     const resetCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
     const resetCodeHash = crypto.createHash('sha256').update(resetCode).digest('hex');
     await prisma.user.update({

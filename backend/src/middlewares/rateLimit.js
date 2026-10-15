@@ -1,5 +1,3 @@
-/** @file Provides a small in-memory rate limiter for sensitive endpoints. */
-
 const buckets = new Map();
 const cleanupTimer = setInterval(() => {
     const cutoff = Date.now() - (15 * 60 * 1000);

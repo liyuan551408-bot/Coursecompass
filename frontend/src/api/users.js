@@ -1,4 +1,3 @@
-/** @file Wraps profile and completed-course endpoints. */
 import request from './request'
 
 export async function getProfile() {

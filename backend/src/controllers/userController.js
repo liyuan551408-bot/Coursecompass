@@ -1,12 +1,9 @@
-/** @file Translates user HTTP requests into service calls and API responses. */
 const userService = require('../services/userService');
 
-// Return the profile associated with the verified request identity.
 const getMe = async (req, res) => {
     try {
-        const userId = req.user.id; 
-        
-        // Delegate persistence and public-field selection to the service layer.
+        const userId = req.user.id;
+
         const user = await userService.findPublicUserById(userId);
 
         if (!user) {
@@ -20,18 +17,17 @@ const getMe = async (req, res) => {
     }
 };
 
-// Update only profile fields owned by the verified user.
 const updateProfile = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { name, major, studyYear, interests, goals, planningPreferences } = req.body; // Accept only supported profile fields from the frontend.
+        const { name, major, studyYear, interests, goals, planningPreferences } = req.body;
 
         const updatedUser = await userService.updateUserProfile(userId, { name, major, studyYear, interests, goals, planningPreferences });
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Profile updated successfully', 
-            data: updatedUser 
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            data: updatedUser
         });
     } catch (error) {
         if (error.statusCode === 403) {

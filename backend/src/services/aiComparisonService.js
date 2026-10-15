@@ -1,4 +1,3 @@
-/** @file Builds, parses, validates, and repairs structured AI course comparisons. */
 const { toPlainText } = require('../utils/plainText');
 
 const RELATIONSHIP_TYPES = new Set([
@@ -13,7 +12,7 @@ class InvalidAiComparisonError extends Error {
     }
 }
 
-/** Return complete JSON-object substrings while respecting quoted braces. */
+// Track quoted strings and escapes so braces inside explanation text do not split JSON.
 const findJsonObjects = (value) => {
     const objects = [];
     let depth = 0;
@@ -42,7 +41,6 @@ const findJsonObjects = (value) => {
     return objects;
 };
 
-/** Parse JSON from plain text, Markdown fences, or text surrounding one JSON object. */
 const parseAiJsonResponse = (raw) => {
     if (typeof raw !== 'string' || !raw.trim()) {
         throw new InvalidAiComparisonError('AI comparison output was empty');
@@ -60,7 +58,7 @@ const parseAiJsonResponse = (raw) => {
             if (typeof parsed === 'string') parsed = JSON.parse(parsed);
             if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
         } catch {
-            // Continue through the bounded candidate list.
+
         }
     }
     throw new InvalidAiComparisonError('AI comparison output was not valid JSON');
@@ -74,7 +72,6 @@ const cleanRequiredText = (value, field, maxLength) => {
 
 const cleanOptionalText = (value, maxLength) => toPlainText(value).trim().slice(0, maxLength);
 
-/** Validate the public comparison schema and exact learning-order course coverage. */
 const validateCompareResponse = (value, courses) => {
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
         throw new InvalidAiComparisonError('Comparison must be a JSON object');
@@ -124,6 +121,7 @@ const validateCompareResponse = (value, courses) => {
             reason: cleanRequiredText(item.reason, `learningOrder[${index}].reason`, 500)
         };
     });
+    // Reject missing or repeated courses instead of presenting an incomplete learning order.
     const returnedIds = learningOrder.map(item => item.courseId);
     if (learningOrder.length !== selectedIds.length
         || new Set(returnedIds).size !== returnedIds.length
@@ -182,7 +180,6 @@ Required JSON shape:
 ${schemaText}`;
 };
 
-/** Generate a validated comparison, making at most one schema-repair request. */
 const generateComparisonAnalysis = async ({ courses, chatCompletion }) => {
     const systemPrompt = buildSystemPrompt(courses);
     const userContent = `Selected course data:\n${JSON.stringify(courses, null, 2)}`;
@@ -196,6 +193,7 @@ const generateComparisonAnalysis = async ({ courses, chatCompletion }) => {
         return validateCompareResponse(parseAiJsonResponse(raw), courses);
     } catch (firstError) {
         if (!(firstError instanceof InvalidAiComparisonError)) throw firstError;
+        // Allow one schema-repair attempt to bound provider calls and response latency.
         const repairPrompt = `${systemPrompt}
 Your previous response failed schema validation: ${firstError.message}.
 Repair it now. Return ONLY the corrected JSON object. Ensure learningOrder includes every selected ID exactly once.`;

@@ -1,8 +1,3 @@
-/** @file Provides shared auth helpers for frontend modules. */
-/**
- * Token storage utilities
- */
-
 const TOKEN_KEY = 'course_compass_token'
 const USER_KEY = 'course_compass_user'
 
@@ -36,7 +31,6 @@ export function removeStoredUser() {
   localStorage.removeItem(USER_KEY)
 }
 
-/** Clear all locally stored login information. */
 export function clearAuthStorage() {
   removeToken()
   removeStoredUser()

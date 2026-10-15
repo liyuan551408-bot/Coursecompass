@@ -1,4 +1,3 @@
-<!-- @file Provides backend keyword, fuzzy, and structured course search with quick-save. -->
 <script setup>
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -195,7 +194,7 @@ onBeforeUnmount(() => {
         @keydown.enter.self="goToDetail(course.id)"
         @keydown.space.self.prevent="goToDetail(course.id)"
       >
-        <!-- Quick save button -->
+
         <button
           v-if="!authStore.isLoggedIn || authStore.isStudent"
           class="quick-save-btn"
@@ -298,7 +297,6 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-/* Search panel */
 .search-panel {
   margin-bottom: 24px;
   background: rgba(255, 255, 255, 0.85);
@@ -332,7 +330,6 @@ onBeforeUnmount(() => {
   border-radius: var(--radius) !important;
 }
 
-/* Course grid */
 .course-grid {
   min-height: 200px;
   display: grid;
@@ -340,7 +337,6 @@ onBeforeUnmount(() => {
   gap: 20px;
 }
 
-/* Course card */
 .course-card {
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
@@ -355,7 +351,6 @@ onBeforeUnmount(() => {
   border-color: var(--accent-border);
 }
 
-/* Quick save button */
 .quick-save-btn {
   position: absolute;
   top: 14px;
@@ -399,7 +394,6 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
-/* Card content */
 .course-card__top {
   display: flex;
   justify-content: flex-start;
@@ -482,7 +476,6 @@ onBeforeUnmount(() => {
   padding: 60px 0;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .page-heading {
     align-items: flex-start;

@@ -1,4 +1,3 @@
-/** @file Owns account-scoped semester plans synchronized with the backend. */
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { addPlanCourse, createPlan, deletePlan, getPlans, removePlanCourse } from '../api/plans'

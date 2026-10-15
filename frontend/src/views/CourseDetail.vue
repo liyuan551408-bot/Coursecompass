@@ -1,4 +1,3 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the course detail page. -->
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -206,7 +205,7 @@ watch(() => route.params.id, () => {
     </el-result>
 
     <template v-else-if="course">
-      <!-- Back link -->
+
       <button class="back-link" @click="goBack">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="19" y1="12" x2="5" y2="12" />
@@ -215,7 +214,6 @@ watch(() => route.params.id, () => {
         {{ backLabel }}
       </button>
 
-      <!-- Course Hero -->
       <div class="course-hero">
         <div class="hero-info">
           <div class="hero-tags">
@@ -228,7 +226,6 @@ watch(() => route.params.id, () => {
           <h1 class="course-title">{{ course.name }}</h1>
           <p class="course-desc">{{ course.description || 'No course description is available.' }}</p>
 
-          <!-- Action buttons -->
           <div class="hero-actions">
             <el-button
               v-if="!authStore.isLoggedIn || authStore.isStudent"
@@ -271,7 +268,6 @@ watch(() => route.params.id, () => {
           </div>
         </div>
 
-        <!-- Rating sidebar -->
         <div class="rating-sidebar">
           <div class="rating-card">
             <div class="rating-score">
@@ -295,7 +291,6 @@ watch(() => route.params.id, () => {
         </div>
       </div>
 
-      <!-- AI Summary -->
       <el-card class="ai-summary-card" shadow="never">
         <template #header>
           <div class="summary-header">
@@ -315,7 +310,6 @@ watch(() => route.params.id, () => {
         <el-empty v-else description="Generate an AI summary of approved student reviews." :image-size="80" />
       </el-card>
 
-      <!-- Course Info Grid -->
       <div class="detail-grid">
         <el-card shadow="never" class="info-card">
           <h2 class="card-heading">Course Information</h2>
@@ -386,7 +380,6 @@ watch(() => route.params.id, () => {
         </el-card>
       </div>
 
-      <!-- Reviews -->
       <div class="review-layout">
         <div class="reviews-column">
           <h2 class="section-heading">Student Reviews</h2>
@@ -468,7 +461,6 @@ watch(() => route.params.id, () => {
   margin: 0 auto;
 }
 
-/* Back link */
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -490,7 +482,6 @@ watch(() => route.params.id, () => {
   background: var(--accent-bg);
 }
 
-/* Course Hero */
 .course-hero {
   display: grid;
   grid-template-columns: 1fr 260px;
@@ -537,7 +528,6 @@ watch(() => route.params.id, () => {
   max-width: 680px;
 }
 
-/* Hero actions */
 .hero-actions {
   display: flex;
   gap: 10px;
@@ -557,7 +547,6 @@ watch(() => route.params.id, () => {
   border: none !important;
 }
 
-/* Rating sidebar */
 .rating-sidebar {
   position: sticky;
   top: 80px;
@@ -631,7 +620,6 @@ watch(() => route.params.id, () => {
   color: var(--text-h);
 }
 
-/* AI Summary */
 .ai-summary-card {
   margin-bottom: 24px;
   border-radius: var(--radius-lg) !important;
@@ -686,7 +674,6 @@ watch(() => route.params.id, () => {
   font-size: 12px;
 }
 
-/* Detail grid */
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -742,7 +729,6 @@ watch(() => route.params.id, () => {
   max-width: 60%;
 }
 
-/* Pathways */
 .pathway-section {
   margin-bottom: 20px;
 }
@@ -783,7 +769,6 @@ watch(() => route.params.id, () => {
   box-shadow: var(--shadow-sm);
 }
 
-/* Reviews */
 .review-layout {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
@@ -874,7 +859,6 @@ watch(() => route.params.id, () => {
   word-wrap: break-word;
 }
 
-/* Review form */
 .review-form-card {
   position: sticky;
   top: 80px;
@@ -891,7 +875,6 @@ watch(() => route.params.id, () => {
   padding: 12px !important;
 }
 
-/* Responsive */
 @media (max-width: 860px) {
   .course-hero {
     grid-template-columns: 1fr;

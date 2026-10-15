@@ -1,4 +1,3 @@
-/** @file Translates auth HTTP requests into service calls and API responses. */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userService = require('../services/userService');
@@ -32,7 +31,7 @@ const register = async (req, res) => {
 
     } catch (error) {
         console.error('Registration Error:', error);
-        
+
         if (error instanceof TypeError) {
             return res.status(400).json({ success: false, message: error.message });
         }
@@ -64,7 +63,6 @@ const login = async (req, res) => {
 
         const user = await userService.findUserForAuthenticationByEmail(email);
 
-        // Do not reveal whether an email is registered.
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -81,8 +79,6 @@ const login = async (req, res) => {
             });
         }
 
-        // The role choice scopes the login experience; authority still comes
-        // from the role stored for the authenticated account.
         if (user.role !== role) {
             return res.status(401).json({
                 success: false,
@@ -147,7 +143,6 @@ const forgotPassword = async(req, res) => {
             }
         }
 
-        // Keep the response identical to prevent account discovery.
         res.status(200).json({
             success: true,
             message: 'If that email address is in our database, we will send you an email with a reset code.'
@@ -186,14 +181,14 @@ const resetPassword = async (req, res) => {
         if (error instanceof TypeError) {
             return res.status(400).json({ success: false, message: error.message });
         }
-        
+
         if (error.message === 'Invalid code') {
             return res.status(400).json({
                 success: false,
                 message: 'Invalid reset code or email'
             });
         }
-        
+
         if (error.message === 'Code expired') {
             return res.status(400).json({
                 success: false,

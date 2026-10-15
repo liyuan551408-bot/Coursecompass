@@ -1,4 +1,3 @@
-/** @file Exposes service and database health checks. */
 const prisma = require('../lib/prisma');
 
 const getHealth = (_req, res) => res.status(200).json({ success: true, status: 'ok' });

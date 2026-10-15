@@ -1,8 +1,5 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the login page. -->
 <script setup>
-/**
- * Login page
- */
+
 import { computed, ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -60,7 +57,6 @@ async function handleLogin() {
     await authStore.login({ role: form.role, email: form.email, password: form.password })
     ElMessage.success('Signed in successfully')
 
-    // Return to the originally requested page, or the dashboard by default.
     const defaultRoute = authStore.isAdmin ? '/admin' : authStore.isModerator ? '/moderation' : '/dashboard'
     const redirect = route.query.redirect || defaultRoute
     router.push(typeof redirect === 'string' ? redirect : defaultRoute)

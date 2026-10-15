@@ -1,4 +1,3 @@
-<!-- @file Starts the email verification-code password reset flow. -->
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'

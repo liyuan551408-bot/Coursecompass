@@ -1,4 +1,3 @@
-/** Keep placeholder comments out of generated claims and summarize ratings when no written evidence remains. */
 const buildReviewSummaryEvidence = reviews => {
     const comments = reviews
         .map(review => typeof review.comment === 'string' ? review.comment.trim() : '')

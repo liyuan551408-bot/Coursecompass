@@ -1,6 +1,3 @@
-/** @file Normalizes model-generated prose for plain-text presentation. */
-
-/** Remove common Markdown syntax while preserving readable paragraphs. */
 const toPlainText = (value) => {
     if (typeof value !== 'string') return '';
 

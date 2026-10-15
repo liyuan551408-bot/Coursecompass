@@ -1,4 +1,3 @@
-/** @file Implements ai business rules and persistence operations. */
 const EMBEDDING_DIMENSIONS = 1024;
 
 const SILICONFLOW_EMBEDDING_URL =
@@ -11,7 +10,6 @@ const SILICONFLOW_EMBEDDING_MODEL =
 const EMBEDDING_TIMEOUT_MS = 15000;
 const MAX_RETRIES = 2;
 
-/** Generate and validate a 1024-dimensional course/query vector with SiliconFlow. */
 const generateEmbedding = async (text) => {
   if (typeof text !== 'string' || text.trim() === '') {
     throw new TypeError('Embedding input must be a non-empty string');
@@ -23,7 +21,6 @@ const generateEmbedding = async (text) => {
     throw new Error('SILICONFLOW_API_KEY is not configured');
   }
 
-  // Retry timeouts and transient provider errors, but fail fast for validation/auth errors.
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), EMBEDDING_TIMEOUT_MS);
@@ -71,6 +68,7 @@ const generateEmbedding = async (text) => {
       );
     }
 
+    // Query and stored vectors must match the database's 1024-dimensional embedding space.
     if (vector.length !== EMBEDDING_DIMENSIONS) {
       throw new Error(
         `Expected a ${EMBEDDING_DIMENSIONS}-dimensional embedding, got ${vector.length}`
@@ -81,6 +79,7 @@ const generateEmbedding = async (text) => {
 
     return vector;
     } catch (error) {
+      // Retry transient timeouts, throttling, and server errors; other failures need intervention.
       const retryable = error.name === 'AbortError' || error.message.includes('(429)') || error.message.includes('(5');
       if (!retryable || attempt === MAX_RETRIES) {
         console.error('Failed to call SiliconFlow embedding API:', error.message);

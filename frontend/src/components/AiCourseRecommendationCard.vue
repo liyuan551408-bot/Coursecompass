@@ -1,4 +1,3 @@
-<!-- @file Displays one recommended course together with its AI-generated explanation. -->
 <script setup>
 import { computed } from 'vue'
 

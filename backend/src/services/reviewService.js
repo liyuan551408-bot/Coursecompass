@@ -1,10 +1,8 @@
-/** @file Implements review business rules and persistence operations. */
 const prisma = require('../lib/prisma');
 const { createNotificationsSafely } = require('./notificationService');
 
 const VALID_STATUSES = new Set(['PENDING', 'APPROVED', 'REJECTED', 'HIDDEN']);
 
-// Centralized projections prevent moderation-only fields from leaking through public APIs.
 const reviewSelect = {
     id: true,
     userId: true,
@@ -156,7 +154,8 @@ const updateReview = async (userId, courseId, data) => {
             updateData[field] = data[field];
         }
     }
-    // Any student edit requires moderation again, even if the review was approved before.
+
+    // Edited content must be moderated again, even if the original review was approved.
     updateData.status = 'PENDING';
 
     const updated = await prisma.review.update({
@@ -173,7 +172,7 @@ const updateReview = async (userId, courseId, data) => {
 };
 
 const getApprovedReviewsByCourse = async (courseId) => {
-    // Public course pages must never expose pending, rejected, or hidden reviews.
+
     return prisma.review.findMany({
         where: {
             courseId: Number(courseId),
@@ -221,8 +220,7 @@ const updateReviewStatus = async (reviewId, newStatus) => {
         select: reviewSelect
     });
 
-    // Notify only on a real transition so repeated moderation requests do not
-    // create duplicate messages for the review author.
+    // Repeating an unchanged moderation decision should not send another notification.
     if (review.status !== newStatus) {
         const courseLabel = [updated.course?.code, updated.course?.name].filter(Boolean).join(' — ') || 'a course';
         const notification = newStatus === 'APPROVED'
@@ -272,7 +270,6 @@ const reportReview = async (reviewId, reporterId, reason) => {
         throw new TypeError('You cannot report your own review');
     }
 
-    // The database uniqueness constraint prevents one user from repeatedly reporting a review.
     const report = await prisma.reviewReport.create({
         data: {
             reviewId,
@@ -360,7 +357,6 @@ const getCourseRatingSummary = async (courseId) => {
         _count: { _all: true }
     });
 
-    // Return a stable object shape when no approved ratings exist.
     if (groups.length === 0) {
         return {
             courseId: numericCourseId,

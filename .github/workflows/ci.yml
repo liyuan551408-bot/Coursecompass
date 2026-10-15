@@ -1,5 +1,3 @@
-# @file Runs CI checks for frontend, backend, database and API connectivity.
-
 name: CourseCompass CI
 
 on:
@@ -20,12 +18,8 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-
 jobs:
 
-  # =========================================================
-  # 1. Frontend Build
-  # =========================================================
   frontend:
     name: Frontend Build
     runs-on: ubuntu-latest
@@ -37,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -49,10 +43,6 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-
-  # =========================================================
-  # 2. Backend + Database + API
-  # =========================================================
   backend:
     name: Backend / Database / API
     runs-on: ubuntu-latest
@@ -69,35 +59,20 @@ jobs:
 
     steps:
 
-      # -------------------------------------------------------
-      # Checkout
-      # -------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
-
-      # -------------------------------------------------------
-      # Node
-      # -------------------------------------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
 
-
-      # -------------------------------------------------------
-      # Backend dependencies
-      # -------------------------------------------------------
       - name: Install backend dependencies
         working-directory: backend
         run: npm ci
 
-
-      # -------------------------------------------------------
-      # Required environment variables
-      # -------------------------------------------------------
       - name: Check required secrets
         shell: bash
         run: |
@@ -111,23 +86,14 @@ jobs:
             exit 1
           fi
 
-
-      # -------------------------------------------------------
-      # Prisma validation
-      # -------------------------------------------------------
       - name: Validate Prisma schema
         working-directory: backend
         run: npx prisma validate
-
 
       - name: Generate Prisma Client
         working-directory: backend
         run: npx prisma generate
 
-
-      # -------------------------------------------------------
-      # Backend JavaScript syntax
-      # -------------------------------------------------------
       - name: Check backend JavaScript syntax
         working-directory: backend
         shell: bash
@@ -139,10 +105,6 @@ jobs:
 
           node --check app.js
 
-
-      # -------------------------------------------------------
-      # Database connection
-      # -------------------------------------------------------
       - name: Test Supabase database connection
         working-directory: backend
         run: |
@@ -177,10 +139,6 @@ jobs:
           testDatabase();
           NODE
 
-
-      # -------------------------------------------------------
-      # Start backend
-      # -------------------------------------------------------
       - name: Start backend server
         working-directory: backend
         shell: bash
@@ -190,10 +148,6 @@ jobs:
 
           echo "Backend started with PID $(cat server.pid)"
 
-
-      # -------------------------------------------------------
-      # Test API
-      # -------------------------------------------------------
       - name: Test backend API connection
         working-directory: backend
         shell: bash
@@ -221,10 +175,6 @@ jobs:
 
           exit 1
 
-
-      # -------------------------------------------------------
-      # Stop backend
-      # -------------------------------------------------------
       - name: Stop backend server
         if: always()
         working-directory: backend

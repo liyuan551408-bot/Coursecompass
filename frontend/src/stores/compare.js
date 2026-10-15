@@ -1,4 +1,3 @@
-/** @file Owns session-persisted course comparison selections and AI output. */
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
@@ -22,6 +21,7 @@ export const useCompareStore = defineStore('compare', () => {
   const originCourseId = ref(Number.isInteger(restored.originCourseId) ? restored.originCourseId : null)
   const searchQuery = ref(typeof restored.searchQuery === 'string' ? restored.searchQuery : '')
   const subjectId = ref(Number.isInteger(restored.subjectId) ? restored.subjectId : null)
+  // Share the request lock across page remounts; never restore an in-flight lock from storage.
   const generating = ref(false)
   const summaryStreaming = ref(false)
 
@@ -39,7 +39,7 @@ export const useCompareStore = defineStore('compare', () => {
         subjectId: subjectId.value,
       }))
     } catch {
-      // Pinia still preserves state for this navigation session when storage is unavailable.
+
     }
   }
 
@@ -93,6 +93,7 @@ export const useCompareStore = defineStore('compare', () => {
     return true
   }
 
+  // Lock before starting the request so repeated clicks cannot launch duplicate AI calls.
   function beginGeneration() {
     if (generating.value || selectedCourses.value.length < 2) return false
     generating.value = true

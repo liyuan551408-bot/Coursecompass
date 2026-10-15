@@ -1,5 +1,3 @@
-/** @file Preset profile vocabularies and lightweight relevance ranking. */
-
 export const INTEREST_KEYWORDS = Object.freeze([
   'Artificial Intelligence', 'Machine Learning', 'Software Engineering', 'Web Development',
   'Mobile Development', 'Data Science', 'Cybersecurity', 'Algorithms', 'Databases',

@@ -1,4 +1,3 @@
-/** @file Applies the auth cross-cutting policy to Express requests. */
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
@@ -14,6 +13,7 @@ const verifyToken = (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     try {
+        // Verify the signature and expiry before trusting the token's claims.
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();

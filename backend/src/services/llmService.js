@@ -1,10 +1,8 @@
-/** @file Implements llm business rules and persistence operations. */
 const ZHIPU_URL = process.env.ZHIPU_API_URL || 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
 const DEFAULT_TIMEOUT_MS = 45000;
 const MAX_RETRIES = 1;
 const CHAT_MODEL = process.env.ZHIPU_CHAT_MODEL || 'glm-4';
 
-/** Send grounded chat messages to Zhipu GLM-4 and return its text response. */
 const chatCompletion = async ({ messages, temperature = 0.3, maxTokens }) => {
     const apiKey = process.env.ZHIPU_API_KEY;
     if (!apiKey) throw new Error('ZHIPU_API_KEY is not configured');

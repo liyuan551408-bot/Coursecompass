@@ -1,4 +1,3 @@
-<!-- @file Reveals validated text progressively without exposing raw AI output. -->
 <script setup>
 import { onBeforeUnmount, ref, watch } from 'vue'
 

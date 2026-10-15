@@ -1,4 +1,3 @@
-/** @file Exercises extended database.smoke behavior as a repeatable command-line smoke check. */
 const assert = require('node:assert/strict');
 const bcrypt = require('bcryptjs');
 
@@ -60,6 +59,8 @@ const cleanUp = async () => {
 
 const run = async () => {
     await cleanUp();
+
+    const initialQueue = await reviewService.getModerationQueueCounts();
 
     const passwordHash =
         await bcrypt.hash('ExtendedTest123!', 10);
@@ -148,7 +149,11 @@ const run = async () => {
 
     assert.deepEqual(
         await reviewService.getModerationQueueCounts(),
-        { reviews: 1, reports: 0, total: 1 }
+        {
+            reviews: initialQueue.reviews + 1,
+            reports: initialQueue.reports,
+            total: initialQueue.total + 1
+        }
     );
 
     console.log('Passed: create review');
@@ -177,7 +182,6 @@ const run = async () => {
         /EXT\.TEST\.101.*approved.*published/
     );
 
-    // Repeating the same decision must not create a duplicate notification.
     await reviewService.updateReviewStatus(
         createdReview.id,
         'APPROVED'
@@ -208,7 +212,11 @@ const run = async () => {
     }));
     assert.deepEqual(
         await reviewService.getModerationQueueCounts(),
-        { reviews: 0, reports: 1, total: 1 }
+        {
+            reviews: initialQueue.reviews,
+            reports: initialQueue.reports + 1,
+            total: initialQueue.total + 1
+        }
     );
 
     await reviewService.updateReportStatus(report.id, 'RESOLVED');
@@ -217,7 +225,7 @@ const run = async () => {
     }));
     assert.deepEqual(
         await reviewService.getModerationQueueCounts(),
-        { reviews: 0, reports: 0, total: 0 }
+        initialQueue
     );
 
     console.log('Passed: report notifications and moderation counts');
@@ -278,7 +286,6 @@ const run = async () => {
         completionDate
     );
 
-    // Run the operation twice to prove that upsert remains idempotent.
     await completedCourseService.markCourseCompleted(
         user.id,
         secondCourse.id,

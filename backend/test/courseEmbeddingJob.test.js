@@ -1,4 +1,3 @@
-/** @file Verifies non-blocking course embedding job scheduling and failure containment. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 

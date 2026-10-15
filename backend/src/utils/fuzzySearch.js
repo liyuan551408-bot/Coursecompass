@@ -1,5 +1,3 @@
-/** @file Provides dependency-free fuzzy ranking for catalogue search. */
-
 const normalizeText = (value) => String(value ?? '')
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -46,9 +44,6 @@ const scoreCourse = (course, normalizedQuery) => {
         .map(word => word[0])
         .join('');
 
-    // Very short terms are usually abbreviations. Requiring a whole token,
-    // course-code match, or title initials prevents "ai" matching words such
-    // as "training" while still matching "Artificial Intelligence".
     if (compactQuery.length <= 2) {
         const exactTokenMatch = queryTokens.length === 1 && courseTokens.includes(normalizedQuery);
         const codeMatch = compactCode.includes(compactQuery);

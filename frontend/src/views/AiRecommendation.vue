@@ -1,4 +1,3 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the ai recommendation page. -->
 <script setup>
 import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
@@ -35,7 +34,7 @@ function parseStructuredRationale(value) {
       if (typeof parsed === 'string') parsed = JSON.parse(parsed)
       if (parsed && typeof parsed === 'object') return parsed
     } catch {
-      // Try the next candidate before falling back to plain text.
+
     }
   }
   return null

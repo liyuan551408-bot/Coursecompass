@@ -1,4 +1,3 @@
-/** @file Routes for authenticated user notifications. */
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/notificationController');

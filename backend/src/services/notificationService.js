@@ -1,4 +1,3 @@
-/** @file Stores and retrieves user notifications. */
 const prisma = require('../lib/prisma');
 
 const createNotifications = async (userIds, data) => {
@@ -9,8 +8,6 @@ const createNotifications = async (userIds, data) => {
     });
 };
 
-// Notification delivery must never make the primary review/course operation fail.
-// Errors remain visible in the backend console for diagnosis.
 const createNotificationsSafely = async (userIds, data) => {
     try {
         return await createNotifications(userIds, data);

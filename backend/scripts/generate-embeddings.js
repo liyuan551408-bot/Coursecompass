@@ -1,11 +1,9 @@
-/** @file Exercises generate embeddings behavior as a repeatable command-line smoke check. */
 require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const { refreshCourseEmbedding } = require('../src/services/courseEmbeddingService');
 
 const prisma = new PrismaClient();
 
-/** Generate missing vectors by default, or rebuild every course when --force is supplied. */
 async function main() {
     const force = process.argv.includes('--force');
     console.log(`Starting course embedding initialization (${force ? 'full rebuild' : 'missing vectors only'})...`);

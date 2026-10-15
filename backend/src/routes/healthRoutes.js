@@ -1,4 +1,3 @@
-/** @file Maps public service health endpoints. */
 const express = require('express');
 const healthController = require('../controllers/healthController');
 

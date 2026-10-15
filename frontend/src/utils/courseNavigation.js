@@ -1,5 +1,3 @@
-/** @file Creates and validates Course Detail origin navigation. */
-
 const ORIGIN_LABELS = {
   courses: 'Back to course catalogue',
   compare: 'Back to course comparison',

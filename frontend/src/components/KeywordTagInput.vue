@@ -1,4 +1,3 @@
-<!-- @file Reusable preset-suggestion and custom tag input. -->
 <script setup>
 import { computed, ref } from 'vue'
 import { dedupeKeywords, suggestKeywords } from '../utils/profileKeywords'

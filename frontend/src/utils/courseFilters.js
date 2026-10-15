@@ -1,5 +1,3 @@
-/** @file Defines shared course-filter ranges and API query mapping. */
-
 export const CREDIT_RANGE = Object.freeze({ min: 0, max: 120, step: 15 })
 export const WORKLOAD_RANGE = Object.freeze({ min: 150, max: 1200, step: 150 })
 

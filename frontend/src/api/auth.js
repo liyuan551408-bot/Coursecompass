@@ -1,7 +1,3 @@
-/** @file Wraps backend auth endpoints behind a small frontend API client. */
-/**
- * Authentication API
- */
 import request from './request'
 
 export function loginApi(credentials) {
@@ -16,8 +12,7 @@ export function registerApi(data) {
 }
 
 export function forgotPasswordApi(email) {
-  // SMTP authentication can take longer on the first connection, so allow
-  // the reset request more time than the normal API timeout.
+
   return request.post('/auth/forgot-password', { email }, { timeout: 30000 })
 }
 

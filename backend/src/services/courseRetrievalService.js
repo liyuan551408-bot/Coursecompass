@@ -1,12 +1,9 @@
-/** @file Implements course retrieval business rules and persistence operations. */
 const prisma = require('../lib/prisma');
 const aiService = require('./aiService');
 
 const DEFAULT_THRESHOLD = Number(process.env.AI_SIMILARITY_THRESHOLD) || 0.35;
 
-// Raw PostgreSQL enum arrays can be returned as either JavaScript arrays or
-// array-literal strings, depending on the database adapter. Keep the API shape
-// stable so frontend consumers never iterate over a string character by character.
+// Raw queries may return enum arrays as PostgreSQL literals instead of JS arrays.
 const normalizeEnumArray = (value) => {
     if (Array.isArray(value)) return value;
     if (typeof value !== 'string') return [];
@@ -24,7 +21,6 @@ const normalizeEnumArray = (value) => {
         .filter(Boolean);
 };
 
-/** Embed a query, apply structured filters, and retrieve the closest active courses. */
 const semanticSearchCourses = async ({
     query,
     limit = 5,
@@ -38,10 +34,14 @@ const semanticSearchCourses = async ({
     level,
     excludeUserId
 }) => {
+
     const embedding = await aiService.generateEmbedding(query);
     const vectorString = `[${embedding.join(',')}]`;
+    // Build only trusted SQL fragments; bind all request values through placeholders.
     const filters = [];
     const values = [vectorString, threshold];
+
+    // Exclude completed courses before ranking and LIMIT so they do not consume result slots.
     if (excludeUserId !== undefined) {
     const userId = Number(excludeUserId);
 
@@ -60,6 +60,7 @@ const semanticSearchCourses = async ({
         )
     `);
 }
+
     if (semester) {
         values.push(semester);
         filters.push(`AND "offeredSemesters" @> ARRAY[$${values.length}]::"CourseSemester"[]`);
@@ -88,7 +89,9 @@ const semanticSearchCourses = async ({
         values.push(level);
         filters.push(`AND level = $${values.length}::int`);
     }
+
     values.push(limit);
+    // pgvector <=> is cosine distance: lower distances rank first; 1 - distance is similarity.
     const courses = await prisma.$queryRawUnsafe(`
         SELECT id, code, name, description, credits, level, "subjectId",
                "offeredSemesters", "assessmentTypes", "workloadHours", "officialLink",
@@ -112,6 +115,7 @@ const semanticSearchCourses = async ({
             }
         })
         : [];
+    // Enrich results by ID while preserving the similarity order from the raw query.
     const detailsById = new Map(details.map(course => [course.id, course]));
 
     return courses.map(course => ({

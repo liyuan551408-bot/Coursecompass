@@ -1,4 +1,3 @@
-/** @file Implements course business rules and persistence operations. */
 const prisma = require('../lib/prisma');
 const {
     refreshCourseEmbedding,
@@ -89,8 +88,6 @@ const getAllCoursesForAdmin = async () => prisma.course.findMany({
     orderBy: { code: 'asc' }
 });
 
-
-// Create a course and optionally connect its prerequisites.
 const createCourse = async (courseData, prerequisiteIds = []) => {
     const data = {
         name: courseData.name,
@@ -120,7 +117,6 @@ const createCourse = async (courseData, prerequisiteIds = []) => {
         };
     }
 
-    // Resolve either numeric course IDs or course codes before connecting.
     if (prerequisiteIds && prerequisiteIds.length > 0) {
         const prerequisiteCourses = await resolvePrerequisiteCourses(prisma, prerequisiteIds);
         data.prerequisites = {
@@ -130,7 +126,7 @@ const createCourse = async (courseData, prerequisiteIds = []) => {
 
     const createdCourse = await prisma.course.create({
         data,
-        // Return prerequisite details so callers do not need a follow-up query.
+
         include: {
             prerequisites: true,
             subject: true
@@ -205,37 +201,33 @@ const updateCourse = async (id, courseData) => {
     return updatedCourse;
 };
 
-// Fetch one course together with both directions of its prerequisite graph.
 const getCourseById = async (id) => {
     return prisma.course.findUnique({
         where: { id: Number(id), isActive: true },
         include: {
-            prerequisites: true,     // Courses that should be completed first.
-            prerequisiteFor: true,   // Follow-on courses unlocked by this course.
+            prerequisites: true,
+            prerequisiteFor: true,
             subject: true
         }
     });
 };
 
-// Fetch several active courses for side-by-side comparison.
 const getCoursesByIds = async (courseIds) => {
     return prisma.course.findMany({
         where: {
-            // Match any requested id in a single database query.
-            id: { 
-                in: courseIds.map(id => Number(id)) 
+
+            id: {
+                in: courseIds.map(id => Number(id))
             },
-            isActive: true // Exclude courses that are no longer offered.
+            isActive: true
         },
         include: {
-            prerequisites: true, // Include prerequisite context in comparisons.
+            prerequisites: true,
             subject: true
         }
     });
 };
 
-// Fetch the complete, evidence-based context needed for an AI comparison.
-// Reviews are limited to recent approved entries so the prompt stays focused.
 const getCoursesForComparisonAnalysis = async (courseIds) => {
     const normalizedIds = [...new Set(courseIds.map(id => Number(id)))];
     const courses = await prisma.course.findMany({
@@ -293,7 +285,7 @@ const getCoursesForComparisonAnalysis = async (courseIds) => {
             id: course.id,
             code: course.code,
             name: course.name,
-            // Keep the provider prompt bounded even when database text is long.
+
             description: course.description ? course.description.slice(0, 2000) : null,
             credits: course.credits,
             workloadHours: course.workloadHours,
@@ -320,7 +312,6 @@ const getCoursesForComparisonAnalysis = async (courseIds) => {
     });
 };
 
-
 const getCourseByCode = async (code) => {
     if (typeof code !== 'string' || code.trim() === '') {
         throw new TypeError('A valid course code is required');
@@ -337,11 +328,10 @@ const getCourseByCode = async (code) => {
     });
 };
 
-// Search active courses using optional text and structured filters.
 const searchCourses = async (queryFilters) => {
     const { keyword, subject, subjectId, mode = 'keyword', level, semester, assessmentType, minCredits, maxCredits,
         minWorkload, maxWorkload, minRating, hasPrerequisites } = queryFilters;
-    const whereClause = { isActive: true }; // Inactive courses are excluded by default.
+    const whereClause = { isActive: true };
     if (subjectId !== undefined && subjectId !== '') {
         const parsedSubjectId = Number(subjectId);
 
@@ -388,7 +378,6 @@ const searchCourses = async (queryFilters) => {
         throw new TypeError('Invalid search mode');
     }
 
-    // Apply case-insensitive text matching across code, name, and description.
     if (keyword && mode === 'keyword') {
         whereClause.OR = [
             { code: { contains: keyword, mode: 'insensitive' } },
@@ -406,22 +395,18 @@ const searchCourses = async (queryFilters) => {
         ] }];
     }
 
-    // Narrow results to the requested course level.
     if (numericFilters.level !== undefined) {
         whereClause.level = numericFilters.level;
     }
 
-    // Narrow results to a teaching semester.
     if (semester) {
         whereClause.offeredSemesters = { has: semester };
     }
 
-    // Narrow results to an assessment type.
     if (assessmentType) {
         whereClause.assessmentTypes = { has: assessmentType };
     }
 
-    // Apply inclusive lower and upper credit bounds.
     if (numericFilters.minCredits !== undefined || numericFilters.maxCredits !== undefined) {
         whereClause.credits = {};
         if (numericFilters.minCredits !== undefined) whereClause.credits.gte = numericFilters.minCredits;

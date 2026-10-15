@@ -1,11 +1,8 @@
-/** @file Maps auth API endpoints to middleware and controller handlers. */
-
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const { loginLimiter, registerLimiter, forgotPasswordLimiter, resetPasswordLimiter } = require('../middlewares/rateLimit');
 
-// Only route suffixes are defined here.
 router.post('/register', registerLimiter, authController.register);
 router.post('/login', loginLimiter, authController.login);
 router.post('/forgot-password', forgotPasswordLimiter, authController.forgotPassword);

@@ -1,8 +1,5 @@
-<!-- @file Coordinates data loading, user actions, and presentation for the saved courses page. -->
 <script setup>
-/**
- * Saved courses page.
- */
+
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -21,7 +18,6 @@ const loading = ref(false)
 const savedCourses = ref([])
 const removingIds = ref(new Set())
 
-// Export to planner
 const exportDialogVisible = ref(false)
 const exportSelectedIds = ref(new Set())
 const exporting = ref(false)
@@ -108,7 +104,6 @@ function goToDetail(courseId) {
   router.push(courseDetailLocation(courseId, route, 'saved'))
 }
 
-/* ===== Export to planner ===== */
 async function openExportDialog() {
   exportSelectedIds.value = new Set(savedCourses.value.map((c) => c.id))
   plansLoading.value = true
@@ -202,7 +197,6 @@ onMounted(loadSavedCourses)
       </div>
     </div>
 
-    <!-- Stats bar -->
     <div v-if="hasCourses" class="stats-bar">
       <div class="stat-card">
         <div class="stat-icon stat-icon--purple">📚</div>
@@ -234,7 +228,6 @@ onMounted(loadSavedCourses)
       </div>
     </div>
 
-    <!-- Course list -->
     <div v-loading="loading" class="course-list">
       <el-card
         v-for="course in savedCourses"
@@ -243,7 +236,7 @@ onMounted(loadSavedCourses)
         class="course-card"
         @click="goToDetail(course.id)"
       >
-        <!-- Quick unsave button -->
+
         <button
           class="quick-save-btn quick-save-btn--saved"
           :class="{ 'quick-save-btn--loading': removingIds.has(course.id) }"
@@ -301,7 +294,6 @@ onMounted(loadSavedCourses)
         </div>
       </el-card>
 
-      <!-- Empty state -->
       <div v-if="!loading && !hasCourses" class="empty-state">
         <div class="empty-icon">🔖</div>
         <h3>No saved courses yet</h3>
@@ -312,7 +304,6 @@ onMounted(loadSavedCourses)
       </div>
     </div>
 
-    <!-- Export to planner dialog -->
     <el-dialog
       v-model="exportDialogVisible"
       title="Export saved courses to planner"
@@ -320,7 +311,7 @@ onMounted(loadSavedCourses)
       :close-on-click-modal="false"
     >
       <div v-loading="plansLoading" class="export-dialog">
-        <!-- Course selection -->
+
         <div class="export-section">
           <div class="export-section-header">
             <label class="export-label">Select courses to export ({{ exportSelectedIds.size }} selected)</label>
@@ -384,7 +375,6 @@ onMounted(loadSavedCourses)
   margin: 0 auto;
 }
 
-/* Header */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -431,7 +421,6 @@ onMounted(loadSavedCourses)
   gap: 6px;
 }
 
-/* Stats bar */
 .stats-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -490,7 +479,6 @@ onMounted(loadSavedCourses)
   margin-top: 2px;
 }
 
-/* Course list */
 .course-list {
   display: flex;
   flex-direction: column;
@@ -511,7 +499,6 @@ onMounted(loadSavedCourses)
   border-color: var(--accent-border);
 }
 
-/* Quick save button */
 .quick-save-btn {
   position: absolute;
   top: 16px;
@@ -636,7 +623,6 @@ onMounted(loadSavedCourses)
   width: 100%;
 }
 
-/* Empty state */
 .empty-state {
   text-align: center;
   padding: 80px 24px;
@@ -665,7 +651,6 @@ onMounted(loadSavedCourses)
   line-height: 1.6;
 }
 
-/* Responsive */
 @media (max-width: 860px) {
   .stats-bar {
     grid-template-columns: repeat(2, 1fr);
@@ -723,7 +708,6 @@ onMounted(loadSavedCourses)
   }
 }
 
-/* Export dialog */
 .export-dialog {
   max-height: 60vh;
   overflow-y: auto;

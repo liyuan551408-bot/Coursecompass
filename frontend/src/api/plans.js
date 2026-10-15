@@ -1,4 +1,3 @@
-/** @file Wraps authenticated semester-plan endpoints. */
 import request from './request'
 
 export async function getPlans() {

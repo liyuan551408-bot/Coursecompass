@@ -1,4 +1,3 @@
-/** @file Exposes authenticated completed-course operations. */
 const completedCourseService = require('../services/completedCourseService');
 
 const handleError = (res, error, action) => {

@@ -1,4 +1,3 @@
-/** @file Owns account-scoped saved courses synchronized with the backend. */
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { getSavedCourses, removeSavedCourse, saveCourse } from '../api/savedCourses'

@@ -1,4 +1,3 @@
-/** Normalize semester values returned as arrays or PostgreSQL array literals. */
 export function normalizeSemesters(value) {
   if (Array.isArray(value)) return value
   if (typeof value !== 'string') return []

@@ -1,4 +1,3 @@
-/** @file Verifies prerequisite relationships using temporary test courses. */
 const assert = require('node:assert/strict');
 const { randomUUID } = require('node:crypto');
 

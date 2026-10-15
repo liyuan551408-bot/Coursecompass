@@ -1,4 +1,3 @@
-<!-- @file Renders the shared horizontal course-subject navigation bar. -->
 <script setup>
 defineProps({
   subjects: { type: Array, default: () => [] },

@@ -1,4 +1,3 @@
-/** @file Applies the role cross-cutting policy to Express requests. */
 const prisma = require('../lib/prisma');
 
 const requireRole = (...allowedRoles) => async (req, res, next) => {
@@ -10,6 +9,7 @@ const requireRole = (...allowedRoles) => async (req, res, next) => {
     }
 
     try {
+        // Read the current role so role changes and deleted accounts take effect immediately.
         const user = await prisma.user.findUnique({ where: { id: Number(req.user.id) }, select: { role: true } });
         if (!user) {
             return res.status(401).json({ success: false, message: 'Account no longer exists.' });

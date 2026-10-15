@@ -1,4 +1,3 @@
-/** @file Exercises database constraints.smoke behavior as a repeatable command-line smoke check. */
 const assert = require('node:assert/strict');
 const bcrypt = require('bcryptjs');
 
@@ -26,7 +25,7 @@ const expectRejected = async (label, operation) => {
 };
 
 const cleanUp = async () => {
-    // Delete the test user first so related plans and saved courses cascade.
+
     await prisma.user.deleteMany({
         where: {
             email: TEST_EMAIL

@@ -1,4 +1,3 @@
-<!-- @file Summarizes the signed-in student's course activity and next actions. -->
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

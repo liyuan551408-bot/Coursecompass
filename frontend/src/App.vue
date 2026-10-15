@@ -1,9 +1,5 @@
-<!-- @file Renders the shared application shell, navigation, authentication controls, and route outlet. -->
 <script setup>
-/**
- * Application shell shared by all pages.
- * The header remains visible while router-view changes the page content.
-*/
+
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from './stores/auth'
@@ -68,7 +64,6 @@ function handleLogout() {
   router.push('/login')
 }
 
-// Load student state only for student accounts.
 watch(() => [authStore.isLoggedIn, authStore.user?.id, authStore.user?.role], ([isLoggedIn]) => {
   if (isLoggedIn && authStore.isStudent) {
     savedStore.loadSaved().catch(() => {})
@@ -188,7 +183,6 @@ onBeforeUnmount(() => {
   box-shadow: 0 2px 20px rgba(50, 37, 79, 0.06);
 }
 
-/* Logo */
 .logo {
   font-weight: 800;
   color: var(--text-h);
@@ -224,7 +218,6 @@ onBeforeUnmount(() => {
   -webkit-text-fill-color: transparent;
 }
 
-/* Navigation */
 .nav-links {
   display: flex;
   gap: 4px;
@@ -275,7 +268,6 @@ onBeforeUnmount(() => {
   background: var(--accent);
 }
 
-/* Badge */
 .nav-link--badge {
   padding-right: 8px;
 }
@@ -302,7 +294,6 @@ onBeforeUnmount(() => {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* Auth area */
 .auth-area {
   display: flex;
   align-items: center;
@@ -365,7 +356,6 @@ onBeforeUnmount(() => {
   border-radius: 10px !important;
 }
 
-/* Main content */
 .app-main {
   flex: 1;
   padding: 32px 24px 56px;
@@ -375,7 +365,6 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
 }
 
-/* Page transition */
 .page-fade-enter-active,
 .page-fade-leave-active {
   transition: opacity 0.2s ease, transform 0.2s ease;
@@ -391,7 +380,6 @@ onBeforeUnmount(() => {
   transform: translateY(-8px);
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .app-header {
     padding: 10px 16px;

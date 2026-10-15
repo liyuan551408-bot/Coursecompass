@@ -1,7 +1,3 @@
-/** @file Wraps backend request endpoints behind a small frontend API client. */
-/**
- * Axios request wrapper
- */
 import axios from 'axios'
 import { getToken, clearAuthStorage } from '../utils/auth'
 import router from '../router'
@@ -11,7 +7,6 @@ const request = axios.create({
   timeout: 10000,
 })
 
-// Add the token automatically before sending a request.
 request.interceptors.request.use((config) => {
   const token = getToken()
   if (token) {
@@ -20,10 +15,10 @@ request.interceptors.request.use((config) => {
   return config
 })
 
-// A 401 means the session has expired: clear local data and redirect to login.
 request.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    // Login requests can opt out; expired sessions clear shared auth state and retain a return path.
     if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {
       clearAuthStorage()
       window.dispatchEvent(new Event('course-compass:unauthorized'))

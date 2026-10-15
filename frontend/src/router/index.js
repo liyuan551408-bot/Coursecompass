@@ -1,4 +1,3 @@
-/** @file Defines application routes and enforces authentication and role metadata. */
 import { createRouter, createWebHistory } from 'vue-router'
 import { getStoredUser, getToken } from '../utils/auth'
 
@@ -71,6 +70,7 @@ const router = createRouter({
   },
 })
 
+// Route guards guide navigation; protected API endpoints enforce authorization on the server.
 router.beforeEach((to) => {
   const token = getToken()
   const user = getStoredUser()
