@@ -4,7 +4,6 @@
   "private": true,
   "description": "Backend API for the CourseCompass university course planning application.",
   "main": "app.js",
-
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
@@ -13,7 +12,6 @@
     "embeddings:generate": "node scripts/generate-embeddings.js",
     "embeddings:rebuild": "node scripts/generate-embeddings.js --force"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -26,10 +24,8 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^9.0.4",
-    "openai": "^7.3.0",
     "pg": "^8.22.0"
   },
-
   "devDependencies": {
     "nodemon": "^3.1.14",
     "prisma": "^6.19.3"

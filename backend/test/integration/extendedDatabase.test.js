@@ -61,6 +61,10 @@ const cleanUp = async () => {
 const run = async () => {
     await cleanUp();
 
+    // Shared databases may already contain pending reviews and reports.
+    // Verify this fixture's changes without assuming the moderation queue is empty.
+    const initialQueue = await reviewService.getModerationQueueCounts();
+
     const passwordHash =
         await bcrypt.hash('ExtendedTest123!', 10);
 
@@ -148,7 +152,11 @@ const run = async () => {
 
     assert.deepEqual(
         await reviewService.getModerationQueueCounts(),
-        { reviews: 1, reports: 0, total: 1 }
+        {
+            reviews: initialQueue.reviews + 1,
+            reports: initialQueue.reports,
+            total: initialQueue.total + 1
+        }
     );
 
     console.log('Passed: create review');
@@ -208,7 +216,11 @@ const run = async () => {
     }));
     assert.deepEqual(
         await reviewService.getModerationQueueCounts(),
-        { reviews: 0, reports: 1, total: 1 }
+        {
+            reviews: initialQueue.reviews,
+            reports: initialQueue.reports + 1,
+            total: initialQueue.total + 1
+        }
     );
 
     await reviewService.updateReportStatus(report.id, 'RESOLVED');
@@ -217,7 +229,7 @@ const run = async () => {
     }));
     assert.deepEqual(
         await reviewService.getModerationQueueCounts(),
-        { reviews: 0, reports: 0, total: 0 }
+        initialQueue
     );
 
     console.log('Passed: report notifications and moderation counts');
