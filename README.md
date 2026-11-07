@@ -2,6 +2,15 @@
 
 CourseCompass helps university students search and compare courses, save courses, record completed study, build semester plans, submit reviews, and receive AI-assisted recommendations. Moderators manage reviews and reports; administrators manage courses, subjects, and users.
 
+## What you can do
+
+- Find and compare courses, including prerequisite information.
+- Save courses, record completed study, and organize semester plans.
+- Read and submit reviews and explore AI-assisted recommendations.
+- Use moderation and administration views for reviews, reports, and course data.
+
+This is a full-stack course-planning prototype. AI features and integration tests depend on external services; the frontend can be built independently.
+
 ## Technology
 
 | Area | Implementation |
@@ -52,7 +61,7 @@ frontend/
 README.md
 ```
 
-The frontend and backend manage dependencies separately. Run npm commands in the relevant directory; there is no root npm package. Prisma CLI commands run from backend, discover prisma/schema.prisma, and load backend/.env without a separate Prisma configuration file.
+The frontend and backend manage dependencies separately. Run application npm commands in the relevant directory. The root `package.json` contains Prisma dependencies but no application scripts. Prisma CLI commands run from backend, discover prisma/schema.prisma, and load backend/.env without a separate Prisma configuration file.
 
 ## Requirements
 
@@ -149,4 +158,15 @@ Running npm test in backend also runs integration tests. These require a configu
 
 Keep existing migration SQL files unchanged after deployment so their checksums continue to match the database migration history.
 
-CI builds the frontend, validates Prisma, checks backend syntax, and verifies database and API connectivity. Configure the DATABASE_URL and JWT_SECRET repository secrets; AI provider credentials are also read from repository secrets.
+CI builds the frontend, validates Prisma, checks backend syntax, and verifies database and API connectivity. It currently uses Node.js 20 and does not run the automated test suite. Configure the DATABASE_URL and JWT_SECRET repository secrets for the backend job; AI provider credentials are also read from repository secrets. The local setup above recommends Node.js 22.12 or later.
+
+## Where to start in the code
+
+- `frontend/src/views/` contains the course, planner, recommendation, and administration screens.
+- `backend/src/routes/` and `backend/src/controllers/` expose the API.
+- `backend/src/services/` contains course retrieval, planning, reviews, and AI-related logic.
+- `backend/prisma/schema.prisma` defines the data model.
+
+## Current limits
+
+No hosted demo is linked. Full local setup requires PostgreSQL with pgvector and provider credentials for AI features. Use the test commands above to check individual parts; the current CI workflow does not run them.
