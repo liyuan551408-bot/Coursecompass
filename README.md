@@ -65,7 +65,7 @@ The frontend and backend manage dependencies separately. Run application npm com
 
 ## Requirements
 
-- Node.js 22.12 or later and npm. CI uses Node.js 22.
+- Node.js 22.12 or later and npm for local setup. The current CI workflow uses Node.js 20.
 - PostgreSQL with pgvector support, such as a configured Supabase database.
 - SiliconFlow and Zhipu API credentials for AI features.
 - SMTP credentials for password-reset emails.
